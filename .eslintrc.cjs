@@ -29,5 +29,13 @@ module.exports = {
         devDependencies: true,
       },
     ],
+    // 'import/no-unresolved': 'off',
+  },
+  settings: {
+    'import/resolver': {
+      alias: {
+        map: [['@', './src']],
+      },
+    },
   },
 };

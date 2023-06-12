@@ -1,4 +1,6 @@
-<script setup></script>
+<script setup>
+
+</script>
 
 <template>
   <div class="home">
@@ -8,7 +10,7 @@
 
 <style scoped lang="less">
 .home {
-  width: 100%;
+          width: 100%;
   height: 100%;
 }
 </style>
