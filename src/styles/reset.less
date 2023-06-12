@@ -1,0 +1,56 @@
+html,
+body {
+    box-sizing: border-box;
+    overflow: hidden;
+    user-select: none; /*文字不能被选中*/
+}
+
+html,
+body,
+ul,
+li,
+p {
+    margin: 0;
+    padding: 0;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+a,
+a:focus,
+a:hover {
+    cursor: pointer;
+    color: inherit;
+    text-decoration: none;
+}
+ul,
+li {
+    list-style: none;
+}
+
+// 整个滚动条
+::-webkit-scrollbar {
+    width: 6px;
+    &:horizontal {
+        height: 6px;
+    }
+}
+// 滚动条上的按钮
+::-webkit-scrollbar-button {
+    display: none;
+    &:horizontal {
+        display: none;
+    }
+}
+// 滚动条上的滚动滑块
+::-webkit-scrollbar-thumb {
+    background-color: rgb(220, 220, 220);
+    border-radius: 6px;
+    &:hover {
+        background-color: rgba(200, 200, 200);
+    }
+}
