@@ -29,7 +29,9 @@ module.exports = {
         devDependencies: true,
       },
     ],
-    // 'import/no-unresolved': 'off',
+    'import/prefer-default-export': 'off',
+    'vue/html-self-closing': 'off',
+    'no-use-before-define': 'off',
   },
   settings: {
     'import/resolver': {

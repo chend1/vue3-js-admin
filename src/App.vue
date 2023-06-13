@@ -1,8 +1,10 @@
 <script setup>
+import layout from './layout/layout.vue';
 </script>
 
 <template>
-  <router-view></router-view>
+  <layout v-if="!$route.meta.isHiddenLayout" />
+  <router-view v-else />
 </template>
 
 <style scoped>
