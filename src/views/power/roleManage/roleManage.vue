@@ -1,14 +1,13 @@
-<script setup>
-</script>
+<script setup></script>
 
 <template>
-  <div class="home">
-    首页
+  <div class="role-manage">
+    角色管理
   </div>
 </template>
 
 <style scoped lang="less">
-.home {
+.role-manage {
   width: 100%;
   height: 100%;
   background-color: #fff;

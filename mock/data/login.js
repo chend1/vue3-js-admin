@@ -52,7 +52,22 @@ const getUserInfo = {
   type: 'post',
   response: (config) => {
     const { token } = config.body;
-    if (!token) {
+    try {
+      const tokenInfo = JSON.parse(token);
+      const userInfo = accountList.filter(
+        (user) => user.account === tokenInfo.account,
+      )[0];
+      const roleInfo = roleList.filter((role) => role.id === userInfo.role);
+      const ids = roleInfo[0].menuList;
+      return {
+        result: true,
+        code: 200,
+        data: {
+          userInfo: { ...userInfo, avatar: Random.image('100x100') },
+          menu: getMyMenuList(ids, menuList),
+        },
+      };
+    } catch {
       return {
         result: false,
         code: 400,
@@ -60,20 +75,6 @@ const getUserInfo = {
         message: '无效token，请重新登录！',
       };
     }
-    const tokenInfo = JSON.parse(token);
-    const userInfo = accountList.filter(
-      (user) => user.account === tokenInfo.account,
-    )[0];
-    const roleInfo = roleList.filter((role) => role.id === userInfo.role);
-    const ids = roleInfo[0].menuList;
-    return {
-      result: true,
-      code: 200,
-      data: {
-        userInfo: { ...userInfo, avatar: Random.image('100x100') },
-        menu: getMyMenuList(ids, menuList),
-      },
-    };
   },
 };
 export default [login, getUserInfo];

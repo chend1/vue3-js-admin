@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-import { useMainStore } from '@/store';
+import { asyncRoutes } from './asyncRoutes';
 
 const routes = [
   {
@@ -8,13 +8,9 @@ const routes = [
   },
   {
     path: '/login',
+    name: 'login',
     component: () => import('@/views/login/login.vue'),
     meta: { title: '登录', isHiddenLayout: true },
-  },
-  {
-    path: '/home',
-    component: () => import('@/views/home/home.vue'),
-    meta: { title: '首页' },
   },
 ];
 
@@ -22,22 +18,15 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes,
 });
-// 未授权时可访问的白名单
-const whiteList = ['/login'];
-router.beforeEach((to, from, next) => {
-  const baseStore = useMainStore();
-  const { token } = baseStore;
-  if (token) {
-    if (whiteList.indexOf(to.path) !== -1) {
-      next('/');
-    } else {
-      next();
-    }
-  } else if (whiteList.includes(to.path)) {
-    next();
-  } else {
-    next('/login');
-  }
-});
 
+// 重置路由
+export const resetRouter = () => {
+  const asyncRoutesName = asyncRoutes.map((item) => item.name);
+  asyncRoutesName.forEach((name) => {
+    console.log(name, router.hasRoute(name));
+    if (router.hasRoute(name)) {
+      router.removeRoute(name);
+    }
+  });
+};
 export default router;

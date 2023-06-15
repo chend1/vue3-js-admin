@@ -1,14 +1,13 @@
-<script setup>
-</script>
+<script setup></script>
 
 <template>
-  <div class="home">
-    首页
+  <div class="user-manage">
+    用户管理
   </div>
 </template>
 
 <style scoped lang="less">
-.home {
+.user-manage {
   width: 100%;
   height: 100%;
   background-color: #fff;

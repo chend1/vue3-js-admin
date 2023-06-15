@@ -16,7 +16,6 @@ const successCallback = (response) => {
   const {
     message, code, data, result,
   } = response.data;
-  console.log(data);
   if (result) {
     return data;
   }

@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { User, Lock } from '@element-plus/icons-vue';
 import { login } from '@/api';
 import { useMainStore } from '@/store';
+import router from '@/router';
 import Mouse from './Mouse.vue';
 
 const baseStore = useMainStore();
@@ -10,11 +11,16 @@ const userInfo = ref({
   account: '',
   password: '',
 });
+if (import.meta.env.MODE === 'development') {
+  userInfo.value.account = 'admin';
+  userInfo.value.password = '123456';
+}
 
 const loginClick = async () => {
   const { token } = await login(userInfo.value);
   baseStore.setToken(token);
-  baseStore.setUserInfo();
+  await baseStore.setUserInfo();
+  router.push('/');
 };
 </script>
 
