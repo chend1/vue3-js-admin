@@ -1,8 +1,10 @@
 import Mock from 'mockjs';
 import { param2Obj } from '@/utils/index';
 import login from './data/login';
+import userData from './data/account';
+import roleData from './data/role';
 
-const mocks = [...login];
+const mocks = [...login, ...userData, ...roleData];
 
 export function mockXHR() {
   // 处理参数

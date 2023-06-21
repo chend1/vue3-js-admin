@@ -32,6 +32,8 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'vue/html-self-closing': 'off',
     'no-use-before-define': 'off',
+    'no-restricted-syntax': 'off',
+    'no-unused-expressions': 'off',
   },
   settings: {
     'import/resolver': {

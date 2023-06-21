@@ -29,7 +29,6 @@ const Icon = (props) => {
   const { icon } = props;
   return createVNode(ElementPlusIconsVue[icon]);
 };
-
 app.component('Icon', Icon);
 app.use(pinia).use(ElementPlus).use(router)
   .mount('#app');

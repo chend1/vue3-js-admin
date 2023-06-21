@@ -10,6 +10,7 @@ export const useMainStore = defineStore('main', {
     token: getStorage('token') || '',
     userInfo: {},
     menuList: [],
+    linkList: [],
   }),
   actions: {
     setToken(token) {
@@ -20,13 +21,22 @@ export const useMainStore = defineStore('main', {
       const res = await getUserInfo({ token: this.token });
       this.userInfo = res.userInfo;
       const { accessibleRoutes, menuList } = await generateRoutes(asyncRoutes, res.menu);
-      console.log(accessibleRoutes, menuList);
       this.menuList = menuList;
       accessibleRoutes.forEach((route) => {
         router.addRoute(route);
       });
       // 必须最后加上404跳转路由，不然刷新会直接跳转404
       router.addRoute({ path: '/:pathMatch(.*)', redirect: '/404' });
+    },
+    setLinkList(link) {
+      const list = this.linkList.filter((item) => item.path === link.path);
+      if (list.length <= 0) {
+        this.linkList.push(link);
+      }
+    },
+    deleteLink(link) {
+      const idx = this.linkList.findIndex((item) => item.path === link.path);
+      this.linkList.splice(idx + 1, this.linkList.length);
     },
     logOut() {
       removeStorage('token');

@@ -1,6 +1,6 @@
 import { Random } from 'mockjs';
 import { accountList } from './account';
-import { roleList } from './rule';
+import { roleList } from './role';
 import { menuList } from './menu';
 
 const login = {

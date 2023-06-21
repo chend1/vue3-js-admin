@@ -1,16 +1,23 @@
 <script setup>
-import { Operation, ArrowDown } from '@element-plus/icons-vue';
+import { Operation, ArrowDown, ArrowRight } from '@element-plus/icons-vue';
 import { useMainStore } from '@/store';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+
 import MenuItem from './components/MenuItem.vue';
 
 const baseStore = useMainStore();
 const isCollapse = ref(false);
+
+// 面包屑
+const linkList = computed(() => baseStore.linkList);
+
+// 退出登录
 const logOutClick = () => {
   baseStore.logOut();
 };
-const linkClick = () => {
-  console.log(111);
+// 链接跳转
+const linkClick = (link) => {
+  baseStore.deleteLink(link);
 };
 </script>
 
@@ -18,7 +25,7 @@ const linkClick = () => {
   <div class="layout">
     <div
       class="aside"
-      :class="{collapse: isCollapse}"
+      :class="{ collapse: isCollapse }"
     >
       <div class="title">
         <div class="logo">
@@ -28,7 +35,10 @@ const linkClick = () => {
             title="后台管理系统"
           />
         </div>
-        <span v-show="!isCollapse">后台管理系统</span>
+        <span
+          v-show="!isCollapse"
+          style="white-space: nowrap"
+        >后台管理系统</span>
       </div>
       <div class="menu-wrap">
         <el-menu
@@ -38,9 +48,7 @@ const linkClick = () => {
           :router="true"
         >
           <template
-            v-for="item in baseStore.menuList.filter(
-              item => !item.isHidden
-            )"
+            v-for="item in baseStore.menuList.filter(item => !item.isHidden)"
             :key="item.path"
           >
             <MenuItem :menu-info="item"></MenuItem>
@@ -50,11 +58,26 @@ const linkClick = () => {
     </div>
     <div class="article">
       <div class="head">
-        <div
-          class="menu"
-          @click="isCollapse = !isCollapse"
-        >
-          <el-icon><Operation /></el-icon>
+        <div class="menu">
+          <div
+            class="icon"
+            @click="isCollapse = !isCollapse"
+          >
+            <el-icon><Operation /></el-icon>
+          </div>
+          <div class="list">
+            <el-breadcrumb :separator-icon="ArrowRight">
+              <el-breadcrumb-item
+                v-for="item in linkList"
+                :key="item.path"
+                :to="{ path: item.path }"
+                :class="{active: $route.path === item.path}"
+                @click="linkClick(item)"
+              >
+                {{ item.name }}
+              </el-breadcrumb-item>
+            </el-breadcrumb>
+          </div>
         </div>
         <div class="user-info">
           <el-dropdown>
@@ -97,7 +120,7 @@ const linkClick = () => {
   display: flex;
   .aside {
     width: 250px;
-    transition: all .3s;
+    transition: all 0.3s;
     height: 100%;
     overflow-y: auto;
     box-sizing: border-box;
@@ -123,7 +146,7 @@ const linkClick = () => {
         }
       }
     }
-    .menu-wrap{
+    .menu-wrap {
       .menu-list {
         border-right: none;
         --el-menu-bg-color: #192430;
@@ -136,11 +159,11 @@ const linkClick = () => {
       }
     }
   }
-  .collapse{
+  .collapse {
     width: 64px;
-    .title{
+    .title {
       padding: 0;
-      .logo{
+      .logo {
         margin: 0 auto;
       }
     }
@@ -164,8 +187,21 @@ const linkClick = () => {
         font-size: 20px;
         color: #333;
         cursor: pointer;
-        &:hover {
-          color: #4694fa;
+        display: flex;
+        align-items: center;
+
+        .icon {
+          &:hover {
+            color: #4694fa;
+          }
+        }
+        .list {
+          margin-left: 15px;
+          .active{
+            :deep(.is-link){
+              color: #4694fa;
+            }
+          }
         }
       }
       .user-info {
@@ -185,13 +221,13 @@ const linkClick = () => {
               width: 100%;
             }
           }
-          .name{
+          .name {
             margin-right: 8px;
           }
         }
       }
     }
-    .content{
+    .content {
       flex: 1;
       width: 100%;
       background-color: #eee;

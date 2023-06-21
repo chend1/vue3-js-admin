@@ -15,11 +15,13 @@ defineProps({
     class="menu"
     :index="menuInfo.path"
   >
-    <component
-      :is="menuInfo.icon"
-      v-if="menuInfo.icon"
-      class="myIcon"
-    ></component>
+    <el-icon>
+      <component
+        :is="menuInfo.icon"
+        v-if="menuInfo.icon"
+        class="myIcon"
+      ></component>
+    </el-icon>
     <template #title>
       <span>{{ menuInfo.title }}</span>
     </template>
@@ -29,10 +31,12 @@ defineProps({
     :index="menuInfo.path"
   >
     <template #title>
-      <component
-        :is="menuInfo.icon"
-        class="myIcon"
-      ></component>
+      <el-icon>
+        <component
+          :is="menuInfo.icon"
+          class="myIcon"
+        ></component>
+      </el-icon>
       <span>{{ menuInfo.title }}</span>
     </template>
     <el-menu-item-group>
