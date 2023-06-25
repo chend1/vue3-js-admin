@@ -16,7 +16,17 @@ export function param2Obj(url) {
   });
   return obj;
 }
-
+//  扁平化数组
+export function flatArray(arr, key = 'children') {
+  const result = [];
+  arr.forEach((item) => {
+    result.push(item);
+    if (item[key] && item[key].length > 0) {
+      result.push(...flatArray(item[key]));
+    }
+  });
+  return result;
+}
 /**
  * 格式化日期
  * @param {Date} timestamp

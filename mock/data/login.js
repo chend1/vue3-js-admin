@@ -1,7 +1,7 @@
 import { Random } from 'mockjs';
 import { accountList } from './account';
 import { roleList } from './role';
-import { menuList } from './menu';
+import { modifyMenuList } from './menu';
 
 const login = {
   url: '/login',
@@ -59,6 +59,7 @@ const getUserInfo = {
       )[0];
       const roleInfo = roleList.filter((role) => role.id === userInfo.role);
       const ids = roleInfo[0].menuList;
+      const menuList = modifyMenuList();
       return {
         result: true,
         code: 200,

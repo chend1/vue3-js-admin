@@ -34,6 +34,7 @@ defineProps({
       <el-icon>
         <component
           :is="menuInfo.icon"
+          v-if="menuInfo.icon"
           class="myIcon"
         ></component>
       </el-icon>
@@ -41,7 +42,7 @@ defineProps({
     </template>
     <el-menu-item-group>
       <template
-        v-for="item in menuInfo.children.filter(item => !item.isHidden)"
+        v-for="item in menuInfo.children.filter(item => item.status === 1)"
         :key="item.path"
       >
         <MenuItem :menu-info="item"></MenuItem>

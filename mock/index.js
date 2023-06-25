@@ -3,8 +3,9 @@ import { param2Obj } from '@/utils/index';
 import login from './data/login';
 import userData from './data/account';
 import roleData from './data/role';
+import menuData from './data/menu';
 
-const mocks = [...login, ...userData, ...roleData];
+const mocks = [...login, ...userData, ...roleData, ...menuData];
 
 export function mockXHR() {
   // 处理参数

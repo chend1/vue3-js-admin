@@ -1,4 +1,5 @@
-import { getStorage } from '@/utils/storage';
+import { getStorage, setStorage } from '@/utils/storage';
+import { timestampChange } from '@/utils/index';
 // 菜单列表
 export const menuList = getStorage('menuList') || [
   {
@@ -6,9 +7,9 @@ export const menuList = getStorage('menuList') || [
     path: '/home',
     title: '首页',
     icon: 'Lock',
-    isHidden: false,
+    status: 1,
     children: [],
-    parentId: 0,
+    parent_id: 0,
     sort: 1,
   },
   {
@@ -16,9 +17,9 @@ export const menuList = getStorage('menuList') || [
     path: '/about',
     title: '关于我们',
     icon: 'Lock',
-    isHidden: false,
+    status: 1,
     children: [],
-    parentId: 0,
+    parent_id: 0,
     sort: 2,
   },
   {
@@ -27,8 +28,8 @@ export const menuList = getStorage('menuList') || [
     title: 'Table表格',
     icon: 'Lock',
     children: [],
-    isHidden: false,
-    parentId: 0,
+    status: 1,
+    parent_id: 0,
     sort: 3,
   },
   {
@@ -36,44 +37,43 @@ export const menuList = getStorage('menuList') || [
     path: '/power',
     title: '权限管理',
     icon: 'Lock',
-    isHidden: false,
-    parentId: 0,
+    status: 1,
+    parent_id: 0,
     sort: 4,
-    children: [
-      {
-        id: 104,
-        path: '/power/userManage',
-        title: '用户管理',
-        icon: '',
-        children: [],
-        isHidden: false,
-        parentId: 103,
-        sort: 1,
-      },
-      {
-        id: 105,
-        path: '/power/menuManage',
-        title: '菜单管理',
-        icon: '',
-        children: [],
-        isHidden: false,
-        parentId: 103,
-        sort: 3,
-      },
-      {
-        id: 106,
-        path: '/power/roleManage',
-        title: '角色管理',
-        icon: '',
-        children: [],
-        isHidden: false,
-        parentId: 103,
-        sort: 2,
-      },
-    ],
+    children: [],
+  },
+  {
+    id: 104,
+    path: '/power/userManage',
+    title: '用户管理',
+    icon: '',
+    children: [],
+    status: 1,
+    parent_id: 103,
+    sort: 1,
+  },
+  {
+    id: 105,
+    path: '/power/menuManage',
+    title: '菜单管理',
+    icon: '',
+    children: [],
+    status: 1,
+    parent_id: 103,
+    sort: 3,
+  },
+  {
+    id: 106,
+    path: '/power/roleManage',
+    title: '角色管理',
+    icon: '',
+    children: [],
+    status: 1,
+    parent_id: 103,
+    sort: 2,
   },
 ];
-
+// 获取菜单列表
 const getMenuList = {
   url: '/menu/list',
   type: 'get',
@@ -81,153 +81,104 @@ const getMenuList = {
     result: true,
     code: 200,
     data: {
-      list: menuList,
+      list: modifyMenuList(menuList),
     },
   }),
 };
 
-// const editMenu = {
-//   url: '/menu/edit',
-//   type: 'post',
-//   response: (config) => {
-//     const newList = deleteMenuList(menuList, config.body);
-//     if (config.body.parentId === 0) {
-//       const menu = {
-//         id: Date.now(),
-//         ...config.body,
-//       };
-//       newList.unshift(menu);
-//       setStorage('menuList', newList);
-//       menuList = newList;
-//       return {
-//         result: true,
-//         code: 200,
-//         data: {
-//           message: '编辑成功',
-//         },
-//       };
-//     }
-//     const newMenuList = addMenuList(newList, config.body);
-//     if (newMenuList.length > 0) {
-//       setStorage('menuList', newMenuList);
-//       menuList = newMenuList;
-//       return {
-//         result: true,
-//         code: 200,
-//         data: {
-//           message: '编辑成功',
-//         },
-//       };
-//     }
-//     return {
-//       result: false,
-//       code: 400,
-//       data: {
-//         message: '编辑错误',
-//       },
-//       message: '编辑错误',
-//     };
-//   },
-// };
-// const addMenu = {
-//   url: '/menu/add',
-//   type: 'post',
-//   response: (config) => {
-//     const menu = {
-//       id: Date.now(),
-//       ...config.body,
-//     };
-//     if (config.body.parentId === 0) {
-//       menuList.unshift(menu);
-//       setStorage('menuList', menuList);
-//       return {
-//         result: true,
-//         code: 200,
-//         data: {
-//           message: '新增成功',
-//         },
-//       };
-//     }
-//     const newMenuList = addMenuList(menuList, config.body);
-//     if (newMenuList.length > 0) {
-//       setStorage('menuList', newMenuList);
-//       menuList = newMenuList;
-//       return {
-//         result: true,
-//         code: 200,
-//         data: {
-//           message: '新增成功',
-//         },
-//       };
-//     }
-//     return {
-//       result: false,
-//       code: 400,
-//       data: {
-//         message: '新增错误',
-//       },
-//       message: '新增错误',
-//     };
-//   },
-// };
-// const deleteMenu = {
-//   url: '/menu/delete',
-//   type: 'post',
-//   response: (config) => {
-//     const newMenuList = deleteMenuList(menuList, config.body);
-//     if (newMenuList.length > 0) {
-//       setStorage('menuList', newMenuList);
-//       menuList = newMenuList;
-//       return {
-//         result: true,
-//         code: 200,
-//         data: {
-//           message: '删除成功',
-//         },
-//       };
-//     }
-//     return {
-//       result: false,
-//       code: 400,
-//       data: {
-//         message: '删除错误',
-//       },
-//       message: '删除错误',
-//     };
-//   },
-// };
-export default [getMenuList];
+// 新增菜单
+const addMenu = {
+  url: '/menu/add',
+  type: 'post',
+  response: (config) => {
+    const id = menuList[menuList.length - 1].id + 1;
+    const createTime = timestampChange(new Date());
+    const item = {
+      id, ...config.body, create_time: createTime,
+    };
+    menuList.push(item);
+    setStorage('menuList', menuList);
+    console.log('新增', menuList);
+    return {
+      result: true,
+      code: 200,
+      data: {
+        msg: '新增成功',
+      },
+    };
+  },
+};
 
-// // 添加菜单
-// function addMenuList(menuLists, menu) {
-//   const menus = [];
-//   menuLists.forEach((item) => {
-//     const newMenu = { ...item };
-//     if (item.id === menu.parentId) {
-//       if (!menu.id) {
-//         menu.id = Date.now();
-//       }
-//       (newMenu.children).push(menu);
-//     } else if (item.children && item.children.length) {
-//       newMenu.children = addMenuList(item.children, menu);
-//     }
-//     menus.push(newMenu);
-//   });
-//   return menus;
-// }
-// // 删除菜单
-// function deleteMenuList(menuLists, menu) {
-//   const menus = [];
-//   menuLists.forEach((item) => {
-//     let newMenu = { ...item };
-//     if (item.id === menu.id) {
-//       newMenu = menu;
-//     } else {
-//       if (item.children && item.children.length) {
-//         newMenu.children = deleteMenuList(item.children, menu);
-//       }
-//       menus.push(newMenu);
-//     }
-//   });
-//   return menus;
-// }
+// 修改菜单列表
+const editMenu = {
+  url: '/menu/edit',
+  type: 'post',
+  response: (config) => {
+    console.log(config);
+    const { id } = config.body;
+    const index = menuList.findIndex((item) => item.id === id);
+    menuList[index] = Object.assign(menuList[index], config.body);
+    setStorage('menuList', menuList);
+    return {
+      result: true,
+      code: 200,
+      data: {
+        msg: '修改成功',
+      },
+    };
+  },
+};
+
+// 删除菜单
+const delMenu = {
+  url: '/menu/del',
+  type: 'post',
+  response: (config) => {
+    const { id } = config.body;
+    const index = menuList.findIndex((item) => item.id === id);
+    menuList.splice(index, 1);
+    setStorage('menuList', menuList);
+    return {
+      result: true,
+      code: 200,
+      data: {
+        msg: '删除成功',
+      },
+    };
+  },
+};
+
+export default [getMenuList, addMenu, editMenu, delMenu];
+
+// 修改菜单数据结构
+export function modifyMenuList(data = menuList, key = 'parent_id') {
+  const list = [];
+  const children = [];
+  const dataList = JSON.parse(JSON.stringify(data));
+  dataList.forEach((item) => {
+    if (item[key] === 0) {
+      list.push(item);
+    } else {
+      children.push(item);
+    }
+  });
+  findChildren(list, children, key);
+  return list;
+}
+// 寻找子级菜单
+function findChildren(list, children, key = 'parent_id') {
+  const newList = [];
+  const newChildren = [];
+  children.forEach((item) => {
+    const menu = list.find((listItem) => listItem.id === item[key]);
+    if (!menu) {
+      newChildren.push(item);
+    } else {
+      newList.push(item);
+      menu.children.push(item);
+    }
+  });
+  if (newChildren.length > 0) {
+    findChildren(newList, newChildren, key);
+  }
+}

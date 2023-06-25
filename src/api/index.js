@@ -8,3 +8,7 @@ export {
 export {
   roleList, editRole, addRole, deleteRole,
 } from './role/index';
+// 菜单
+export {
+  menuList, editMenu, addMenu, deleteMenu,
+} from './menu/index';

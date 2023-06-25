@@ -8,7 +8,7 @@ export default function useRoleData() {
   const roleData = ref([]);
   const total = ref(0);
   let searchInfo = {};
-  // 获取账号列表
+  // 获取角色列表
   const getRoleList = async (params, callback) => {
     searchInfo = params;
     const res = await roleList(params);
@@ -17,7 +17,7 @@ export default function useRoleData() {
     total.value = res.count;
     callback && callback();
   };
-  // 新增账号
+  // 新增角色
   const addRoleClick = async (params) => {
     try {
       await addRole(params);
@@ -30,7 +30,7 @@ export default function useRoleData() {
       console.error(err);
     }
   };
-  // 修改账号
+  // 修改角色
   const editRoleClick = async (params) => {
     try {
       await editRole(params);
@@ -43,9 +43,9 @@ export default function useRoleData() {
       console.error(err);
     }
   };
-  // 删除账号
+  // 删除角色
   const deleteRoleClick = (params) => {
-    ElMessageBox.confirm('确认删除该账号吗？', '警告', {
+    ElMessageBox.confirm('确认删除该角色吗？', '警告', {
       confirmButtonText: '确认',
       cancelButtonText: '取消',
       type: 'warning',

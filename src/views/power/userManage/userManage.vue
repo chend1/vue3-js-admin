@@ -54,12 +54,14 @@ const confirmClick = () => {
       } else {
         editUserClick(userInfo.value);
       }
+      dialogVisible.value = false;
     }
   });
 };
 // 弹窗关闭事件
 const handleClose = () => {
   userInfo.value = { status: 1 };
+  formRef.value && formRef.value.resetFields();
 };
 
 const rules = {

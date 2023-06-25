@@ -48,7 +48,7 @@ const linkClick = (link) => {
           :router="true"
         >
           <template
-            v-for="item in baseStore.menuList.filter(item => !item.isHidden)"
+            v-for="item in baseStore.menuList.filter(item => item.status === 1)"
             :key="item.path"
           >
             <MenuItem :menu-info="item"></MenuItem>
