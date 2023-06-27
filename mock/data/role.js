@@ -13,7 +13,7 @@ export const roleList = getStorage('roleList') || [
     id: 2,
     name: '普通用户',
     status: 1,
-    menuList: [100, 101, 102, 103, 104, 105, 106, 107],
+    menuList: [100, 101, 102],
     create_time: '2022-10-26 10:10:10',
   },
 ];

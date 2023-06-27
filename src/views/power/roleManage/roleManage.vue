@@ -1,6 +1,7 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import useRoleData from './useRoleData';
+import useMenuData from '../menuManage/useMenuData';
 
 const {
   roleData,
@@ -53,92 +54,89 @@ const handleClose = () => {
   roleInfo.value = {};
 };
 // -----------------------------------------------------
-// const ruleDialogVisible = ref(false);
-// // 默认选中的权限
-// const ruleInfo = ref([]);
-// // 选中的权限列表
-// const selectAuthList = ref([]);
-// // 授权树
-// const menuAuthTree = ref();
-// const { menuData, menuOptions, getMenuList } = useMenuData();
-// getMenuList();
-// const defaultProps = ref({
-//   children: 'children',
-//   label: 'title',
-// });
+const ruleDialogVisible = ref(false);
+// 默认选中的权限
+const ruleInfo = ref([]);
+// 选中的权限列表
+const selectAuthList = ref([]);
+// 授权树
+const menuAuthTree = ref();
+const { menuData, menuOptions, getMenuList } = useMenuData();
+getMenuList();
+const defaultProps = ref({
+  children: 'children',
+  label: 'title',
+});
+// 授权角色
+const handleAuthRole = (row) => {
+  console.log(row);
+  roleInfo.value = row;
+  ruleInfo.value = row.menuList;
+  ruleDialogVisible.value = true;
+  setTimeout(() => {
+    const menuTree = menuAuthTree.value.getCheckedNodes();
+    selectAuthList.value = menuTree;
+  });
+};
+// 确认点击
+const ruleConfirmClick = () => {
+  const rules = selectAuthList.value.map((item) => item.id);
+  editRoleClick({
+    id: roleInfo.value.id,
+    menuList: rules,
+  });
+  ruleDialogVisible.value = false;
+};
 
-// // 授权角色
-// const handleAuthRole = (row) => {
-//   roleInfo.value = row;
-//   getRulesInfo({ id: row.id }, (info) => {
-//     console.log(info);
-//     ruleInfo.value = info.rules;
-//     ruleDialogVisible.value = true;
-//     setTimeout(() => {
-//       const menuTree = menuAuthTree.value.getCheckedNodes();
-//       selectAuthList.value = menuTree;
-//     });
-//   });
-// };
-// // 确认点击
-// const ruleConfirmClick = () => {
-//   const rules = selectAuthList.value.map((item) => item.id);
-//   roleAuth({
-//     id: roleInfo.value.id,
-//     rules: rules.toString(),
-//   });
-//   ruleDialogVisible.value = false;
-// };
-
-// // 授权弹窗关闭
-// const handleRuleClose = () => {
-//   ruleInfo.value = [];
-//   menuAuthTree.value.setCheckedNodes([]);
-// };
-// // 节点点击事件
-// function nodeClick(node, all) {
-//   console.log(node, all);
-//   const list = all.checkedNodes;
-//   const ids = all.checkedKeys;
-//   if (ids.indexOf(node.id) !== -1) {
-//     // 选中节点
-//     selectAuthList.value = [...list];
-//     // 选中父级
-//     if (node.parent_id !== 0 && ids.indexOf(node.parent_id) === -1) {
-//       const menu = menuOptions.value.filter((item) => item.id === node.parent_id);
-//       selectAuthList.value.push(menu[0]);
-//       menuAuthTree.value.setCheckedNodes(selectAuthList.value);
-//     }
-//     // 选中子级
-//     if (node.children && node.children.length > 0) {
-//       node.children.forEach((item) => {
-//         if (ids.indexOf(item.id) === -1) {
-//           selectAuthList.value.push(item);
-//         }
-//       });
-//       menuAuthTree.value.setCheckedNodes(selectAuthList.value);
-//     }
-//   } else {
-//     // 未选中节点
-//     selectAuthList.value = list;
-//     // 取消子级选中
-//     if (node.children && node.children.length > 0) {
-//       selectAuthList.value = [];
-//       list.forEach((item) => {
-//         let flag = false;
-//         node.children.forEach((menu) => {
-//           if (item.id === menu.id) {
-//             flag = true;
-//           }
-//         });
-//         if (!flag) {
-//           selectAuthList.value.push(item);
-//         }
-//       });
-//     }
-//     menuAuthTree.value.setCheckedNodes(selectAuthList.value);
-//   }
-// }
+// 授权弹窗关闭
+const handleRuleClose = () => {
+  ruleInfo.value = [];
+  menuAuthTree.value.setCheckedNodes([]);
+};
+// 节点点击事件
+function nodeClick(node, all) {
+  console.log(node, all);
+  const list = all.checkedNodes;
+  const ids = all.checkedKeys;
+  if (ids.indexOf(node.id) !== -1) {
+    // 选中节点
+    selectAuthList.value = [...list];
+    // 选中父级
+    if (node.parent_id !== 0 && ids.indexOf(node.parent_id) === -1) {
+      const menu = menuOptions.value.filter((item) => item.id === node.parent_id);
+      selectAuthList.value.push(menu[0]);
+      menuAuthTree.value.setCheckedNodes(selectAuthList.value);
+    }
+    // 选中子级
+    if (node.children && node.children.length > 0) {
+      node.children.forEach((item) => {
+        if (ids.indexOf(item.id) === -1) {
+          selectAuthList.value.push(item);
+        }
+      });
+      menuAuthTree.value.setCheckedNodes(selectAuthList.value);
+    }
+  } else {
+    // 未选中节点
+    selectAuthList.value = list;
+    // 取消子级选中
+    if (node.children && node.children.length > 0) {
+      selectAuthList.value = [];
+      list.forEach((item) => {
+        let flag = false;
+        node.children.forEach((menu) => {
+          if (item.id === menu.id) {
+            flag = true;
+          }
+        });
+        if (!flag) {
+          selectAuthList.value.push(item);
+        }
+      });
+    }
+    menuAuthTree.value.setCheckedNodes(selectAuthList.value);
+  }
+}
 </script>
 
 <template>
@@ -265,7 +263,7 @@ const handleClose = () => {
       </span>
     </template>
   </el-dialog>
-  <!-- <el-dialog
+  <el-dialog
     v-model="ruleDialogVisible"
     title="授权角色"
     width="650px"
@@ -294,7 +292,7 @@ const handleClose = () => {
         > 确认 </el-button>
       </span>
     </template>
-  </el-dialog> -->
+  </el-dialog>
 </template>
 
 <style scoped lang="less">
