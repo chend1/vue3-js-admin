@@ -1,7 +1,5 @@
-# Vue 3 + Vite
+# vue3-js-admin 项目简介
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Vue 3 + javascript + Vite +  Vue-Router + pinia + Element-Plus + Axios 后台管理框架;
+项目中使用mockjs模拟需要的后端接口请求，实现了路由权限控制功能，可在此项目基础上直接进行二次开发
 
-## Recommended IDE Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
