@@ -31,4 +31,24 @@ export const asyncRoutes = [
       },
     ],
   },
+  {
+    path: '/games',
+    redirect: '/games',
+    meta: { title: '快乐游戏', isLayout: true },
+    name: 'games',
+    children: [
+      {
+        path: '/games/gomoku',
+        component: () => import('@/views/games/gomoku/gomoku.vue'),
+        meta: { title: '五子棋', isLayout: true },
+        name: 'gomoku',
+      },
+      {
+        path: '/games/tictactoe',
+        component: () => import('@/views/games/tictactoe/tictactoe.vue'),
+        meta: { title: '井字棋', isLayout: true },
+        name: 'tictactoe',
+      },
+    ],
+  },
 ];

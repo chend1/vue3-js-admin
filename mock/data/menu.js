@@ -72,6 +72,36 @@ export const menuList = getStorage('menuList') || [
     parent_id: 103,
     sort: 2,
   },
+  {
+    id: 107,
+    path: '/games',
+    title: '快乐游戏',
+    icon: '',
+    children: [],
+    status: 1,
+    parent_id: 0,
+    sort: 2,
+  },
+  {
+    id: 108,
+    path: '/games/gomoku',
+    title: '五子棋',
+    icon: '',
+    children: [],
+    status: 1,
+    parent_id: 107,
+    sort: 2,
+  },
+  {
+    id: 109,
+    path: '/games/tictactoe',
+    title: '井字棋',
+    icon: '',
+    children: [],
+    status: 1,
+    parent_id: 107,
+    sort: 2,
+  },
 ];
 // 获取菜单列表
 const getMenuList = {
@@ -91,10 +121,13 @@ const addMenu = {
   url: '/menu/add',
   type: 'post',
   response: (config) => {
+    const meun = { ...config.body, children: [] };
     const id = menuList[menuList.length - 1].id + 1;
     const createTime = timestampChange(new Date());
     const item = {
-      id, ...config.body, create_time: createTime,
+      id,
+      ...meun,
+      create_time: createTime,
     };
     menuList.push(item);
     setStorage('menuList', menuList);
@@ -117,7 +150,7 @@ const editMenu = {
     console.log(config);
     const { id } = config.body;
     const index = menuList.findIndex((item) => item.id === id);
-    menuList[index] = Object.assign(menuList[index], config.body);
+    menuList[index] = Object.assign(menuList[index], config.body, { children: [] });
     setStorage('menuList', menuList);
     return {
       result: true,
