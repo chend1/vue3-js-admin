@@ -12,8 +12,10 @@
     "@element-plus/icons-vue": "^2.1.0",
     "axios": "^1.4.0",
     "element-plus": "^2.3.6",
+    "fast-glob": "^3.3.0",
     "normalize.css": "^8.0.1",
     "pinia": "^2.0.34",
+    "vite-plugin-svg-icons": "^2.0.1",
     "vue": "^3.2.47",
     "vue-router": "4"
   },

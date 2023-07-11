@@ -9,22 +9,29 @@ import 'element-plus/dist/index.css';
 // icon图标
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 // 路由
+import svgIcon from '@/assets/svg/index.vue';
 import router from './router';
 // 路由守卫
 import './router/guard';
 import App from './App.vue';
 // mock拦截请求
 import { mockXHR } from '../mock/index';
+// svg引入
+// 虚拟模块的引入方式，用于给脚手架插件在打包和开发时做相应的处理，如果没有这行代码，svg图标将无法正常展示
+// eslint-disable-next-line import/no-unresolved
+import 'virtual:svg-icons-register';
 
 if (import.meta.env.MODE === 'development') {
   mockXHR();
 }
+
 // 状态管理
 const pinia = createPinia();
 const app = createApp(App);
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component);
 }
+app.component('SvgIcon', svgIcon);
 const Icon = (props) => {
   const { icon } = props;
   return createVNode(ElementPlusIconsVue[icon]);

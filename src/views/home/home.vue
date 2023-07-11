@@ -4,6 +4,10 @@
 <template>
   <div class="home">
     首页
+    <svg-icon
+      name="message"
+      color="#eee"
+    />
   </div>
 </template>
 
