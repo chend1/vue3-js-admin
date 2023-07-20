@@ -78,7 +78,7 @@ export const menuList = getStorage('menuList') || [
     title: '快乐游戏',
     icon: '',
     children: [],
-    status: 1,
+    status: 0,
     parent_id: 0,
     sort: 2,
   },

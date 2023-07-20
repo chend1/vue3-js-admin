@@ -17,9 +17,13 @@ import App from './App.vue';
 // mock拦截请求
 import { mockXHR } from '../mock/index';
 // svg引入
-// 虚拟模块的引入方式，用于给脚手架插件在打包和开发时做相应的处理，如果没有这行代码，svg图标将无法正常展示
+// 用于给脚手架插件在打包和开发时做相应的处理，如果没有这行代码，svg图标将无法正常展示
 // eslint-disable-next-line import/no-unresolved
 import 'virtual:svg-icons-register';
+// 导入自定义指令
+import { vContextmenu } from './directive/contextMenu';
+
+console.log(vContextmenu);
 
 if (import.meta.env.MODE === 'development') {
   mockXHR();
@@ -32,6 +36,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component);
 }
 app.component('SvgIcon', svgIcon);
+app.directive('contextmenu', vContextmenu);
 const Icon = (props) => {
   const { icon } = props;
   return createVNode(ElementPlusIconsVue[icon]);

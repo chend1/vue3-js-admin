@@ -36,6 +36,7 @@ module.exports = {
     'no-unused-expressions': 'off',
     'no-plusplus': 'off',
     'import/extensions': 'off',
+    'no-param-reassign': 'off',
   },
   settings: {
     'import/resolver': {
