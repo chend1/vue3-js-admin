@@ -51,4 +51,10 @@ export const asyncRoutes = [
       },
     ],
   },
+  {
+    path: '/rithText',
+    component: () => import('@/views/rithText/rithText.vue'),
+    meta: { title: '富文本', isLayout: true },
+    name: 'rithText',
+  },
 ];

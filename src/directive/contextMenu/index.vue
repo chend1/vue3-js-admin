@@ -22,7 +22,7 @@
 
 <script setup>
 import {
-  reactive, onMounted, watch, ref, nextTick,
+  reactive, onMounted, watch, ref, nextTick, onBeforeUnmount,
 } from 'vue';
 import MenuItem from './MenuItem.vue';
 
@@ -47,11 +47,13 @@ const direction = reactive({
 });
 const emit = defineEmits(['close']);
 const closeMeun = () => {
-  document.removeEventListener('click', closeMeun);
   emit('close');
 };
 onMounted(() => {
   document.addEventListener('click', closeMeun);
+});
+onBeforeUnmount(() => {
+  document.removeEventListener('click', closeMeun);
 });
 const menuRef = ref(null);
 watch(() => props.position, () => {

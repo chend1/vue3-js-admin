@@ -2,7 +2,7 @@ import { h, render } from 'vue';
 import ContextMenu from './index.vue';
 
 let instance = null;
-let div = document.createElement('div');
+const div = document.createElement('div');
 export const vContextmenu = {
   mounted: (el, binding) => {
     // 取消默认的浏览器自带右键菜单
@@ -126,9 +126,8 @@ export const vContextmenu = {
         },
       ];
       if (instance) {
-        document.body.removeChild(div);
         instance = null;
-        div = document.createElement('div');
+        render(instance, div);
       }
       const positionX = e.pageX;
       const positionY = e.pageY;
@@ -144,8 +143,8 @@ export const vContextmenu = {
         position: { positionX, positionY },
         menuList: list,
         onClose() {
-          div && document.body.removeChild(div);
           instance = null;
+          render(instance, div);
         },
       });
       render(instance, div);

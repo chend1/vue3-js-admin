@@ -23,12 +23,7 @@ module.exports = {
     'linebreak-style': ['off', 'windows'],
     'no-console': 'off',
     'no-debugger': 'off',
-    'import/no-extraneous-dependencies': [
-      'error',
-      {
-        devDependencies: true,
-      },
-    ],
+    'import/no-extraneous-dependencies': 'off',
     'import/prefer-default-export': 'off',
     'vue/html-self-closing': 'off',
     'no-use-before-define': 'off',
