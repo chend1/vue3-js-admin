@@ -4,8 +4,9 @@ import login from './data/login';
 import userData from './data/account';
 import roleData from './data/role';
 import menuData from './data/menu';
+import memberData from './data/member';
 
-const mocks = [...login, ...userData, ...roleData, ...menuData];
+const mocks = [...login, ...userData, ...roleData, ...menuData, ...memberData];
 
 export function mockXHR() {
   // 处理参数

@@ -1,5 +1,9 @@
 // 登录
 export { login, getUserInfo } from './login/index';
+// 成员
+export {
+  memberList, editMember, addMember, deleteMember,
+} from './member/index';
 // 账号
 export {
   userList, editUser, addUser, deleteUser,

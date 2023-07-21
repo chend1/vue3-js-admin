@@ -57,4 +57,10 @@ export const asyncRoutes = [
     meta: { title: '富文本', isLayout: true },
     name: 'rithText',
   },
+  {
+    path: '/table',
+    component: () => import('@/views/table/table.vue'),
+    meta: { title: 'table列表', isLayout: true },
+    name: 'table',
+  },
 ];

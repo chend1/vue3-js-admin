@@ -233,6 +233,7 @@ const linkClick = (link) => {
       background-color: #eee;
       box-sizing: border-box;
       padding: 8px;
+      overflow: hidden;
     }
   }
 }
