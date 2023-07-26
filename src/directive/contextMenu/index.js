@@ -100,7 +100,6 @@ export const vContextmenu = {
                 targetEl.innerHTML = str;
               } else {
                 str = htmlStr1 + html2String(str) + htmlStr2;
-                str = str.replaceAll(' ', '&nbsp;');
                 console.log(str);
                 targetEl.innerHTML = str;
               }
@@ -170,9 +169,7 @@ export const vContextmenu = {
               htmlStr2 = htmlStr2.replaceAll('&lt;*div*&gt;', '<div>');
               htmlStr2 = htmlStr2.replaceAll('&lt;*/div*&gt;', '</div>');
               htmlStr2 = htmlStr2.replaceAll('&lt;*br*&gt;', '<br>');
-              let str = htmlStr1 + htmlStr2;
-              str = str.replaceAll(' ', '&nbsp;');
-              targetEl.innerHTML = str;
+              targetEl.innerHTML = htmlStr1 + htmlStr2;
               setTimeout(() => {
                 setCaretPosition(targetEl, selectionStart);
               });
@@ -375,7 +372,7 @@ function partHtml2String(str) {
         newStr += html2String(img);
       }
     } else {
-      newStr += html2String(item);
+      newStr += html2String(item).replaceAll(' ', '&nbsp;');
     }
     return '';
   });
