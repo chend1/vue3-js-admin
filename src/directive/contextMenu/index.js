@@ -1,4 +1,5 @@
 import { h, render } from 'vue';
+import { ElMessage } from 'element-plus';
 import ContextMenu from './index.vue';
 
 let instance = null;
@@ -26,6 +27,10 @@ export const vContextmenu = {
               try {
                 navigator.clipboard.writeText(text);
               } catch (err) {
+                ElMessage({
+                  type: 'error',
+                  message: '复制失败,仅支持localhost或https',
+                });
                 console.error(err);
               }
             }
@@ -34,8 +39,15 @@ export const vContextmenu = {
         {
           name: '粘贴',
           method: async () => {
-            let str = await navigator.clipboard.readText();
-            console.log(str);
+            let str = '';
+            try {
+              str = await navigator.clipboard.readText();
+            } catch {
+              ElMessage({
+                type: 'error',
+                message: '粘贴失败,仅支持localhost或https',
+              });
+            }
             const length = str ? str.length : 0;
             if (
               targetEl.tagName === 'TEXTAREA'
@@ -54,27 +66,42 @@ export const vContextmenu = {
               });
             } else if (targetEl.tagName === 'DIV') {
               // const text = targetEl.innerHTML
-              const text = string2Html(targetEl.innerHTML);
+              let newText = targetEl.innerHTML.replace(
+                /<div>/gi,
+                '<*content*><*div*><*content*>',
+              );
+              newText = newText.replace(
+                /<\/div>/gi,
+                '<*content*><*/div*><*content*>',
+              );
+              newText = newText.replace(
+                /<br>/gi,
+                '<*content*><*br*><*content*>',
+              );
+              const text = string2Html(newText);
               const img = await getImg();
-              console.log(img);
-              // const img = await navigator.clipboard.read();
               const { selectionStart, selectionEnd } = getCursortPosition(targetEl);
               const { str1, str2 } = sliceString(
                 text,
                 selectionStart,
                 selectionEnd,
               );
+              let htmlStr1 = partHtml2String(str1);
+              htmlStr1 = htmlStr1.replaceAll('&lt;*div*&gt;', '<div>');
+              htmlStr1 = htmlStr1.replaceAll('&lt;*/div*&gt;', '</div>');
+              htmlStr1 = htmlStr1.replaceAll('&lt;*br*&gt;', '<br>');
+              let htmlStr2 = partHtml2String(str2);
+              htmlStr2 = htmlStr2.replaceAll('&lt;*div*&gt;', '<div>');
+              htmlStr2 = htmlStr2.replaceAll('&lt;*/div*&gt;', '</div>');
+              htmlStr2 = htmlStr2.replaceAll('&lt;*br*&gt;', '<br>');
+
               if (img !== 'data:image/png;base64,') {
-                str = `${partHtml2String(
-                  str1,
-                )}<img src="${img}"  data-img="true" />${partHtml2String(
-                  str2,
-                )}`;
+                str = `${htmlStr1}<img src="${img}"  data-img="true" />${htmlStr2}`;
                 targetEl.innerHTML = str;
               } else {
-                str = partHtml2String(str1)
-                  + html2String(str)
-                  + partHtml2String(str2);
+                str = htmlStr1 + html2String(str) + htmlStr2;
+                str = str.replaceAll(' ', '&nbsp;');
+                console.log(str);
                 targetEl.innerHTML = str;
               }
 
@@ -83,7 +110,7 @@ export const vContextmenu = {
                   targetEl,
                   parseInt(selectionStart, 10) + parseInt(length, 10),
                 );
-              }, 500);
+              });
               const event = new Event('input');
               targetEl.dispatchEvent(event);
             }
@@ -94,7 +121,17 @@ export const vContextmenu = {
           name: '剪切',
           method: () => {
             const text = getSelectionRange(targetEl);
-            text && navigator.clipboard.writeText(text);
+            // console.log(text.length);
+            try {
+              text && navigator.clipboard.writeText(text);
+              // console.log(text);
+            } catch {
+              ElMessage({
+                type: 'error',
+                message: '剪切失败,仅支持localhost或https',
+              });
+              return;
+            }
             if (
               targetEl.tagName === 'TEXTAREA'
               || targetEl.tagName === 'INPUT'
@@ -106,18 +143,39 @@ export const vContextmenu = {
               const event = new Event('input');
               targetEl.dispatchEvent(event);
             } else if (targetEl.tagName === 'DIV') {
-              const elValue = string2Html(targetEl.innerHTML);
+              let newText = targetEl.innerHTML.replace(
+                /<div>/gi,
+                '<*content*><*div*><*content*>',
+              );
+              newText = newText.replace(
+                /<\/div>/gi,
+                '<*content*><*/div*><*content*>',
+              );
+              newText = newText.replace(
+                /<br>/gi,
+                '<*content*><*br*><*content*>',
+              );
+              const elValue = string2Html(newText);
               const { selectionStart, selectionEnd } = getCursortPosition(targetEl);
               const { str1, str2 } = sliceString(
                 elValue,
                 selectionStart,
                 selectionEnd,
               );
-              const str = partHtml2String(str1) + partHtml2String(str2);
+              let htmlStr1 = partHtml2String(str1);
+              htmlStr1 = htmlStr1.replaceAll('&lt;*div*&gt;', '<div>');
+              htmlStr1 = htmlStr1.replaceAll('&lt;*/div*&gt;', '</div>');
+              htmlStr1 = htmlStr1.replaceAll('&lt;*br*&gt;', '<br>');
+              let htmlStr2 = partHtml2String(str2);
+              htmlStr2 = htmlStr2.replaceAll('&lt;*div*&gt;', '<div>');
+              htmlStr2 = htmlStr2.replaceAll('&lt;*/div*&gt;', '</div>');
+              htmlStr2 = htmlStr2.replaceAll('&lt;*br*&gt;', '<br>');
+              let str = htmlStr1 + htmlStr2;
+              str = str.replaceAll(' ', '&nbsp;');
               targetEl.innerHTML = str;
               setTimeout(() => {
                 setCaretPosition(targetEl, selectionStart);
-              }, 500);
+              });
               const event = new Event('input');
               targetEl.dispatchEvent(event);
             }
@@ -228,13 +286,38 @@ function getCursortPosition(element) {
 }
 // 可编辑div设置光标位置
 function setCaretPosition(element, pos) {
+  let idx = 0;
+  let targetIdx = pos;
+  for (let i = 0; i < element.childNodes.length; i++) {
+    if (element.childNodes[i].nodeName === '#text') {
+      if (targetIdx - element.childNodes[i].data.length > 0) {
+        targetIdx -= element.childNodes[i].data.length;
+      } else {
+        idx = i;
+        break;
+      }
+    } else if (element.childNodes[i].innerHTML !== '<br>') {
+      if (
+        targetIdx - element.childNodes[i].innerText.length > 0) {
+        targetIdx -= element.childNodes[i].innerText.length;
+      } else {
+        idx = i;
+        break;
+      }
+    }
+  }
   let range;
   let selection;
   if (document.createRange) {
     range = document.createRange(); // 创建一个选中区域
     range.selectNodeContents(element); // 选中节点的内容
     if (element.innerHTML.length > 0) {
-      range.setStart(element.childNodes[0], pos); // 设置光标起始为指定位置
+      // 设置光标起始为指定位置
+      try {
+        range.setStart(element.childNodes[idx], targetIdx);
+      } catch {
+        range.setStart(element.childNodes[idx], element.childNodes[idx].length);
+      }
     }
     range.collapse(true); // 设置选中区域为一个点
     selection = window.getSelection(); // 获取当前选中区域
@@ -279,12 +362,12 @@ function partHtml2String(str) {
   // console.log(imgArr)
   const text = str.replace(
     /<\s?img[^>]*>/gi,
-    '<content><imggmiimggmi><content>',
+    '<*content*><*imggmiimggmi*><*content*>',
   );
-  const textList = text.split('<content>').filter((item) => !!item);
+  const textList = text.split('<*content*>').filter((item) => !!item);
   let newStr = '';
   textList.map((item) => {
-    if (item === '<imggmiimggmi>') {
+    if (item === '<*imggmiimggmi*>') {
       const img = imgArr.pop();
       if (img.indexOf('data:image/png;base64,') !== -1) {
         newStr += img;
@@ -307,28 +390,41 @@ function sliceString(str, selectionStart, selectionEnd) {
   // 查找图片所在位置
   const text = str.replace(
     /<\s?img[^>]*>/gi,
-    '<content><imggmiimggmi><content>',
+    '<*content*><*imggmiimggmi*><*content*>',
   );
   let str1 = '';
   let str2 = '';
   let startIdx = 0;
   let endIdx = 0;
   let isOver = false;
-  const textList = text.split('<content>').filter((item) => !!item);
+  const textList = text.split('<*content*>').filter((item) => !!item);
   textList.forEach((item) => {
     if (startIdx <= selectionStart) {
-      if (item !== '<imggmiimggmi>') {
-        if (startIdx + item.length >= selectionStart) {
-          str1 += item.slice(0, selectionStart - startIdx);
+      if (item !== '<*imggmiimggmi*>') {
+        if (item === '<*div*>') {
+          str1 += '<*div*>';
+        } else if (item === '<*/div*>') {
+          str1 += '<*/div*>';
+        } else if (item === '<*br*>') {
+          str1 += '<*br*>';
         } else {
-          str1 += item;
+          if (startIdx + item.length >= selectionStart) {
+            str1 += item.slice(0, selectionStart - startIdx);
+          } else {
+            str1 += item;
+          }
+          startIdx += item.length;
         }
-        startIdx += item.length;
       } else {
         str1 += imgArr.pop();
       }
     }
-    if (item !== '<imggmiimggmi>') {
+    if (
+      item !== '<*imggmiimggmi*>'
+      && item !== '<*div*>'
+      && item !== '<*/div*>'
+      && item !== '<*br*>'
+    ) {
       if (endIdx + item.length > selectionEnd) {
         if (isOver) {
           str2 += item;
@@ -339,10 +435,17 @@ function sliceString(str, selectionStart, selectionEnd) {
       }
       endIdx += item.length;
     } else if (endIdx > selectionEnd) {
-      str2 += imgArr.pop();
+      if (item === '<*div*>') {
+        str2 += '<*div*>';
+      } else if (item === '<*/div*>') {
+        str2 += '<*/div*>';
+      } else if (item === '<*br*>') {
+        str2 += '<*br*>';
+      } else {
+        str2 += imgArr.pop();
+      }
     }
   });
-  console.log(str1, str2);
   return { str1, str2 };
 }
 

@@ -1,9 +1,29 @@
 <script setup>
 import { ref } from 'vue';
-// window.oncontextmenu = (e) => {
-//   e.preventDefault();
-// };
+import { ElMessage } from 'element-plus';
+
 const text = ref('');
+const handlePaste = (event) => {
+  const clipdata = event.clipboardData || window.clipboardData;
+  const content = clipdata.getData('text/plain');
+  if (content) {
+    try {
+      navigator.clipboard.writeText(content);
+    } catch {
+      event.preventDefault();
+      ElMessage({
+        type: 'error',
+        message: '粘贴失败,仅支持localhost或https',
+      });
+    }
+  }
+  // const list = clipboard.readImage();
+  // if (list.toDataURL() === 'data:image/png;base64,') {
+  //   const text = clipboard.readText();
+  //   clipboard.writeText(text);
+  // }
+  // this.$refs.textareaRef.scrollTop = this.$refs.textareaRef.scrollHeight;
+};
 </script>
 
 <template>
@@ -30,6 +50,7 @@ const text = ref('');
         v-contextmenu
         class="img"
         contenteditable="true"
+        @paste="handlePaste"
       ></div>
     </div>
   </div>
